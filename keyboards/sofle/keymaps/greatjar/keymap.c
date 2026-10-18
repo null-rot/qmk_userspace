@@ -1,0 +1,281 @@
+// Copyright 2023 QMK
+// SPDX-License-Identifier: GPL-2.0-or-later
+#include QMK_KEYBOARD_H
+
+enum sofle_layers {
+    _QWERTY,
+    _GAME,
+    _LOWER,
+    _RAISE,
+    _ADJUST,
+};
+
+enum custom_keycodes {
+    KC_PRVWD = QK_USER,
+    KC_NXTWD,
+    KC_LSTRT,
+    KC_LEND,
+    KC_SELPRV,
+    KC_SELNXT,
+    CT_TOGG
+};
+
+#define KC_QWERTY PDF(_QWERTY)
+#define KC_GAME PDF(_GAME)
+
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+/*
+ * Legends show what is typed with a UK (ISO) layout selected on the computer.
+ * Bksl = KC_NUBS (UK \ | key).
+ *
+ * QWERTY
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |  `   |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  | Bspc |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | Tab  |   Q  |   W  |   E  |   R  |   T  |                    |   Y  |   U  |   I  |   O  |   P  |  -   |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | LCTL |   A  |   S  |   D  |   F  |   G  |-------.    ,-------|   H  |   J  |   K  |   L  |   ;  |  '   |
+ * |------+------+------+------+------+------|  F15  |    |  F18  |------+------+------+------+------+------|
+ * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |   /  |RShift|
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *            | LGUI | LAlt | LCTL |LOWER | /SPACE  /       \ Enter\ |RAISE | RCTR | Bksl | RGUI |
+ *            |      |      |      |      |/       /         \      \|      |      |      |      |
+ *            `----------------------------------'           '------''---------------------------'
+ * Encoders (anti-clockwise/clockwise): left = F13/F14, right = F16/F17
+ */
+[_QWERTY] = LAYOUT(
+  KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+  KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_MINS,
+  KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+  KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,  KC_F15,    KC_F18,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+                KC_LGUI, KC_LALT, KC_LCTL, TL_LOWR, KC_SPC,    KC_ENT,  TL_UPPR, KC_RCTL, KC_NUBS, KC_RGUI
+),
+/*
+ * GAME
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |  ESC |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  | Bspc |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | Tab  |   Q  |   W  |   E  |   R  |   T  |                    |   Y  |   U  |   I  |   O  |   P  |  -   |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | LCTL |   A  |   S  |   D  |   F  |   G  |-------.    ,-------|   H  |   J  |   K  |   L  |   ;  |  '   |
+ * |------+------+------+------+------+------|  F15  |    |  F18  |------+------+------+------+------+------|
+ * |LShift|   Z  |   X  |   C  |   V  |   B  |-------|    |-------|   N  |   M  |   ,  |   .  |   /  |RShift|
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *            | LGUI | LAlt | LCTL |LOWER | /SPACE  /       \ Enter\ |RAISE | RCTR | Bksl | RGUI |
+ *            |      |      |      |      |/       /         \      \|      |      |      |      |
+ *            `----------------------------------'           '------''---------------------------'
+ * Encoders (anti-clockwise/clockwise): left = F13/F14, right = F16/F17
+ */
+[_GAME] = LAYOUT(
+  KC_ESC,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_BSPC,
+  KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_MINS,
+  KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
+  KC_LSFT, KC_Z,    KC_X,   KC_C,    KC_V,   KC_B, KC_F15,  KC_F18, KC_N, KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+               KC_LGUI, KC_LALT, KC_LCTL, TL_LOWR, KC_SPC,   KC_ENT, TL_UPPR, KC_RCTL, KC_NUBS, KC_RGUI
+),
+/* LOWER
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * | ESC  |  F1  |  F2  |  F3  |  F4  |  F5  |                    |  F6  |  F7  |  F8  |  F9  | F10  | F11  |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | CAPS |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  | F12  |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |   !  |   "  |   #  |   $  |   %  |-------.    ,-------|   ^  |   &  |   *  |   (  |   )  |   ~  |
+ * |------+------+------+------+------+------|  F15  |    |  F21  |------+------+------+------+------+------|
+ * |      |  =   |  -   |  +   |   {  |   }  |-------|    |-------|   [  |   ]  |   ;  |   :  |   #  |      |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *            | LGUI | LAlt | LCTL |LOWER | /SPACE  /       \ Enter\ |RAISE |SelPrv|SelNxt| RGUI |
+ *            |      |      |      |      |/       /         \      \|      | word | word |      |
+ *            `----------------------------------'           '------''---------------------------'
+ * Encoders (anti-clockwise/clockwise): left = (as base layer), right = F19/F20
+ */
+[_LOWER] = LAYOUT(
+  KC_ESC,  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                       KC_F6,   KC_F7,         KC_F8,         KC_F9,   KC_F10,  KC_F11,
+  KC_CAPS, KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                        KC_6,    KC_7,          KC_8,          KC_9,    KC_0,    KC_F12,
+  _______, KC_EXLM, KC_AT,   KC_NUHS, KC_DLR,  KC_PERC,                     KC_CIRC, KC_AMPR,       KC_ASTR,       KC_LPRN, KC_RPRN, KC_PIPE,
+  _______, KC_EQL,  KC_MINS, KC_PLUS, KC_LCBR, KC_RCBR, _______,   KC_F21, KC_LBRC, KC_RBRC,       KC_SCLN,       KC_COLN, KC_BSLS, _______,
+                    _______, _______, _______, _______, _______,   _______, _______, KC_SELPRV,     KC_SELNXT,     _______
+),
+/* RAISE
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |  `   |      |      |      |      |      |                    |   6  |   7  |   8  |   9  |   0  |  Del |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | Tab  | Ins  | Pscr | Menu |      |      |                    | PgUp |      |  Up  |      |   0  |  -   |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | LCTL | LAlt | LCtl |LSHft |      | Caps |-------.    ,-------| PgDn | Left | Down |Right | End  | Bspc |
+ * |------+------+------+------+------+------|  F15  |    |  F18  |------+------+------+------+------+------|
+ * |LShift| Undo |  Cut | Copy |Paste |      |-------|    |-------|      |      |      |      |      |RShift|
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *            | LGUI | LAlt | LCTL |LOWER | /SPACE  /       \ Enter\ |RAISE | RCTR | Bksl | RGUI |
+ *            |      |      |      |      |/       /         \      \|      |      |      |      |
+ *            `----------------------------------'           '------''---------------------------'
+ */
+[_RAISE] = LAYOUT(
+  KC_GRV, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                     _______, _______, _______, _______, _______, KC_DEL,
+  _______, KC_INS,  KC_PSCR, KC_APP,  XXXXXXX, XXXXXXX,                     KC_PGUP, XXXXXXX, KC_UP,   XXXXXXX, KC_0,    _______,
+  _______, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX, KC_CAPS,                     KC_PGDN, KC_LEFT, KC_DOWN, KC_RGHT, KC_END,  KC_BSPC,
+  _______, C(KC_Z), C(KC_X), C(KC_C), C(KC_V), XXXXXXX, _______,   _______, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______,
+                    _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______
+),
+/* ADJUST
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | Boot |      |QWERTY| GAME |MACWIN|      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |MACWIN|      |      |      |-------.    ,-------|      | VOLDO| MUTE | VOLUP|      |      |
+ * |------+------+------+------+------+------|  F15  |    |  F18  |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      | PREV | PLAY | NEXT |      |      |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *            | LGUI | LAlt | LCTL |LOWER | /SPACE  /       \ Enter\ |RAISE | RCTR | Bksl | RGUI |
+ *            |      |      |      |      |/       /         \      \|      |      |      |      |
+ *            `----------------------------------'           '------''---------------------------'
+ */
+  [_ADJUST] = LAYOUT(
+  XXXXXXX,  XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  QK_BOOT,  XXXXXXX, KC_QWERTY, KC_GAME, CG_TOGG, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  XXXXXXX,  XXXXXXX, CG_TOGG,   XXXXXXX,   XXXXXXX, XXXXXXX,                     XXXXXXX, KC_VOLD, KC_MUTE, KC_VOLU, XXXXXXX, XXXXXXX,
+  XXXXXXX,  XXXXXXX, XXXXXXX,   XXXXXXX,   XXXXXXX, XXXXXXX, XXXXXXX,   XXXXXXX, XXXXXXX, KC_MPRV, KC_MPLY, KC_MNXT, XXXXXXX, XXXXXXX,
+                      _______, _______, _______, _______, _______,   _______, _______, _______, _______, _______
+  )
+};
+
+static bool ctrl_toggled = false;
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case CT_TOGG:
+            if (record->event.pressed) {
+                if (!ctrl_toggled) {
+                    ctrl_toggled = true;
+                    register_code(KC_LCTL);
+                } else {
+                    ctrl_toggled = false;
+                    unregister_code(KC_LCTL);
+                }
+            }
+            return false;
+        case KC_PRVWD:
+            if (record->event.pressed) {
+                if (keymap_config.swap_lctl_lgui) {
+                    register_mods(mod_config(MOD_LALT));
+                    register_code(KC_LEFT);
+                } else {
+                    register_mods(mod_config(MOD_LCTL));
+                    register_code(KC_LEFT);
+                }
+            } else {
+                if (keymap_config.swap_lctl_lgui) {
+                    unregister_mods(mod_config(MOD_LALT));
+                    unregister_code(KC_LEFT);
+                } else {
+                    unregister_mods(mod_config(MOD_LCTL));
+                    unregister_code(KC_LEFT);
+                }
+            }
+            break;
+            case KC_NXTWD:
+             if (record->event.pressed) {
+                if (keymap_config.swap_lctl_lgui) {
+                    register_mods(mod_config(MOD_LALT));
+                    register_code(KC_RIGHT);
+                } else {
+                    register_mods(mod_config(MOD_LCTL));
+                    register_code(KC_RIGHT);
+                }
+            } else {
+                if (keymap_config.swap_lctl_lgui) {
+                    unregister_mods(mod_config(MOD_LALT));
+                    unregister_code(KC_RIGHT);
+                } else {
+                    unregister_mods(mod_config(MOD_LCTL));
+                    unregister_code(KC_RIGHT);
+                }
+            }
+            break;
+        case KC_LSTRT:
+            if (record->event.pressed) {
+                if (keymap_config.swap_lctl_lgui) {
+                     //CMD-arrow on Mac, but we have CTL and GUI swapped
+                    register_mods(mod_config(MOD_LCTL));
+                    register_code(KC_LEFT);
+                } else {
+                    register_code(KC_HOME);
+                }
+            } else {
+                if (keymap_config.swap_lctl_lgui) {
+                    unregister_mods(mod_config(MOD_LCTL));
+                    unregister_code(KC_LEFT);
+                } else {
+                    unregister_code(KC_HOME);
+                }
+            }
+            break;
+        case KC_LEND:
+            if (record->event.pressed) {
+                if (keymap_config.swap_lctl_lgui) {
+                    //CMD-arrow on Mac, but we have CTL and GUI swapped
+                    register_mods(mod_config(MOD_LCTL));
+                    register_code(KC_RIGHT);
+                } else {
+                    register_code(KC_END);
+                }
+            } else {
+                if (keymap_config.swap_lctl_lgui) {
+                    unregister_mods(mod_config(MOD_LCTL));
+                    unregister_code(KC_RIGHT);
+                } else {
+                    unregister_code(KC_END);
+                }
+            }
+            break;
+        case KC_SELPRV:
+            if (record->event.pressed) {
+                if (keymap_config.swap_lctl_lgui) {
+                    register_mods(mod_config(MOD_LALT | MOD_LSFT));
+                    register_code(KC_LEFT);
+                } else {
+                    register_mods(mod_config(MOD_LCTL | MOD_LSFT));
+                    register_code(KC_LEFT);
+                }
+            } else {
+                if (keymap_config.swap_lctl_lgui) {
+                    unregister_mods(mod_config(MOD_LALT | MOD_LSFT));
+                    unregister_code(KC_LEFT);
+                } else {
+                    unregister_mods(mod_config(MOD_LCTL | MOD_LSFT));
+                    unregister_code(KC_LEFT);
+                }
+            }
+            break;
+        case KC_SELNXT:
+            if (record->event.pressed) {
+                if (keymap_config.swap_lctl_lgui) {
+                    register_mods(mod_config(MOD_LALT | MOD_LSFT));
+                    register_code(KC_RIGHT);
+                } else {
+                    register_mods(mod_config(MOD_LCTL | MOD_LSFT));
+                    register_code(KC_RIGHT);
+                }
+            } else {
+                if (keymap_config.swap_lctl_lgui) {
+                    unregister_mods(mod_config(MOD_LALT | MOD_LSFT));
+                    unregister_code(KC_RIGHT);
+                } else {
+                    unregister_mods(mod_config(MOD_LCTL | MOD_LSFT));
+                    unregister_code(KC_RIGHT);
+                }
+            }
+            break;
+    }
+    return true;
+}
+
+#ifdef ENCODER_MAP_ENABLE
+const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
+    [_QWERTY] = { ENCODER_CCW_CW(KC_F13,  KC_F14),  ENCODER_CCW_CW(KC_F16,  KC_F17)  },
+    [_GAME]   = { ENCODER_CCW_CW(KC_F13,  KC_F14),  ENCODER_CCW_CW(KC_F16,  KC_F17)  },
+    [_LOWER]  = { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(KC_F19,  KC_F20)  },
+    [_RAISE]  = { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______) },
+    [_ADJUST] = { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______) },
+};
+#endif
