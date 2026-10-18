@@ -279,3 +279,43 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [_ADJUST] = { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______) },
 };
 #endif
+
+#ifdef OLED_ENABLE
+// Status screen on the half plugged into USB. The display is rotated to
+// 5 characters wide, so every line is padded to exactly 5 characters.
+// Highlighted (inverted) lines show something that is switched on.
+bool oled_task_user(void) {
+    if (!is_keyboard_master()) {
+        return true; // let the keyboard code draw the logo on the other half
+    }
+
+    oled_write_P(PSTR("MODE "), false);
+    oled_write_P(get_highest_layer(default_layer_state) == _GAME ? PSTR("GAME ") : PSTR("QWRTY"), false);
+    oled_write_P(PSTR("     "), false);
+
+    oled_write_P(PSTR("LAYER"), false);
+    switch (get_highest_layer(layer_state)) {
+        case _LOWER:
+            oled_write_P(PSTR("Lower"), true);
+            break;
+        case _RAISE:
+            oled_write_P(PSTR("Raise"), true);
+            break;
+        case _ADJUST:
+            oled_write_P(PSTR("Adjst"), true);
+            break;
+        default:
+            oled_write_P(PSTR("Base "), false);
+            break;
+    }
+    oled_write_P(PSTR("     "), false);
+
+    led_t leds = host_keyboard_led_state();
+    oled_write_P(PSTR("CAPS "), leds.caps_lock);
+    oled_write_P(PSTR("     "), false);
+    oled_write_P(PSTR("CTRL "), ctrl_toggled);
+    oled_write_P(PSTR("     "), false);
+    oled_write_P(keymap_config.swap_lctl_lgui ? PSTR("MAC  ") : PSTR("WIN  "), false);
+    return false;
+}
+#endif
